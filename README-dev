@@ -1,0 +1,251 @@
+NOTE TO DEVELOPERS
+==================
+
+SUMARY
+------
+  I..... About Fortran
+  II.... Compiler options
+  III... Compiling
+  IV.... Testing the program
+  V..... Program structure
+  VI.... Translation
+  VII... Building documentation
+
+I - About Fortran
+-----------------
+  Fortran is the oldest programming language (since 1956). It was originally
+  designed for pure mathematics computing but evolved, since version F77, to
+  become more generalist. In particular, it can have two kind of strings: array
+  or scalar. In case of scalar, from version 2003, character encoding may be
+  either of one byte (like ASCII, Latin or UTF-8) or four bytes (Unicode). This
+  ability to deal with strings make Fortran a good choice for a web page
+  generator.
+     Fortran is still actively maintained and ISO normalized. The current
+  version is F2008 and the next one could be F2015.
+     Fortran is somewhat different of C programming language in the way that
+  lines of code are limited to 132 characters. However an instruction can be
+  continued to the next line by adding an ampersand at the end of line (and
+  sometime at the beginning of the next line). In fBlog source code, you can
+  find some included files (ending by `.inc'). Due to the limitation of 255
+  continuation lines per statement, several files are sometime needed to
+  achieved a statement.
+     Fortran symbols could be confusing for a C programmer!
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+         FORTRAN        C        MEANNIG 
+        ---------------------------------------------- 
+            !          //      comment 
+            &                  continuation line code 
+          .not.        !       negation 
+        include     #include   file to be included 
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+     As its object-oriented programming, the today Fortran is similar to C++
+  but need not to use a preprocessor (but it may use it!) nor any external
+  libraries. However, if fBlog do not use classes for its task it has several
+  allocatable variables.
+     Fortran is designed to be either an interpreted language or compiled. But
+  today it runs only by compilers. For fBlog, only the Gnu compiler is tested:
+  gfortran. In fact gfortran is a front-end of the GCC suite compilers and most
+  of its options and tools are common with C language. If you are familiar with
+  any of the GCC compilers (like C, go, Java...) you can easily play with
+  gfortran.
+     There is also other Fortran compilers (like Intel IFOR) but fBlog was not
+  tested against any of them. Due to fBlog is compliant with standard F2008,
+  these compilers should be able to compile its source code. Positive reports
+  are welcome!
+
+II - GFORTRAN COMPILER OPTIONS
+------------------------------
+  Most of this options described here after are also in the help page at
+  command-line `gfortran --help' or in man page: `man gfortran'.
+    You can add one or several of these options in the file `configure.ac' at
+  the line beginning by `FCFLAGS'.
+  - g
+       debug informations
+  - O1, O2, O3
+       optimisation (letter o, not zero!). This option can be source of trouble
+     with Fortran programs! Sometime a program can compile successfully with
+     optimisation and not without! Especially for initialisation of allocatable
+     variables. So, test and test again! There is no need to use optimisation
+     for this small program that is fBlog. You can prevent optimisation by this
+     option `-fno-frontend-optimize'.
+ 
+  If you modify the source code, these options are helpful:
+  - Wall
+       Warn about faults.
+  - Wextra
+       Warn more than `Wall'.
+  - Werror
+       Stop compilation process immediately in case of any warning.
+  - fcheck=all
+       This option is gfortran specific. It warn at compile time some points
+     that are not warned by `Wall' or `Wextra' but it can detect problems at
+     run time. In this case, the program stop with a explanation message. It is
+     a killer feature! Use it if you encounter an inexplicable crash of an
+     unmodified version of fBlog. This could be helpful in case of compilation
+     on systems other than Linux or processors other than x86_64 (please report
+     bugs!) or if you modify the original source code. Active this option with
+     the debug (-g) option and test again the program without optimisation and
+     with each of the 3 levels of optimisation (-O1, -O2, -O3).
+
+  By default, gFortran compiler does shared linking. You can override it:
+  - static-libgfortran
+      This option include the library `libgfortran'. But the executable output
+    file remain dynamically linked. The program can run on any other computer
+    having the same kernel and the same libc. It is a good choice for a distro
+    that don't provides libgfortran by default.
+  - static
+      This option include all libraries needed for the executable file. The
+    program can run on any computer having the same kernel. It is a good choice
+    if you deliver executable files to unknown Linux systems.
+    NOTE: I don't have any idea of what happen with libc other than glibc like
+    musl or uclibc.
+
+III - COMPILING
+---------------
+  You need a recent gfortran compiler, at least the version 4.8.5! Normally it
+  compiles via autotools invocation (./configure, make, make install). If not,
+  you may use the following command:
+                     ~~~~~~~~~~~~~~~~~
+                     $ cd src
+                     $ gfortran \
+                       -v \
+                       -o fblog \
+                       mod_fblog.f08 \
+                       mod_io.f08 \
+                       mod_tty.f08 \
+                       main.f08
+                     ~~~~~~~~~~~~~~~~~
+
+    Have a look at the end of the file `Makefile', at the section PHONY: there
+  is many options that you can use with the command `make' (like `cscope').
+    One of the most interesting commands is `make distclean' to remove files
+  built from a previous `make'. But, due to a bug, module files are not
+  deleted: run `$ rm src/*.mod'. Then, you need to enter `./configure' again to
+  generate new files like `Makefile' and `src/Makefile'.
+
+IV - TESTING THE PROGRAM
+------------------------
+  Any program built with compiler gFortran can be tested with the same tools
+  used for C programs!
+  * Valgrind
+      This program is helpful for a program using dynamically allocated
+    variables like fBlog does. Like C/C++, this variables carry two potential
+    troubles. The first one is lack of initialisation, the second one is memory
+    leaks.
+      Lack of initialisation can are mostly warned by the options `Wall' or
+    `Wextra'. Sometime Valgrind detects some initialisation defaults than the
+    compiler doesn't. Be warned that a program can have all variables well
+    initialised if the program is compiled with optimisation and badly without
+    optimisation!
+      Memory leaks come mostly from bad coding! Any allocated variable must be
+    deallocated before ending the program. But explicit deallocation is not all
+    time required to prevent memory leak. It is compiler dependent. So it is a
+    good practice to test your program with Valgrind.
+      Compile the program with the debug option `-g' to brings the precise
+    fault location in the source code and run `$ valgrind fblog -u'. This call
+    Valgrind then launch fblog to perform an update of the blog and finally
+    write a resume.
+      Note: do not use Valgrind with a statically linked executable file but
+    with libgfortran (option -static-libgfortran). Valgrind couldn't find any
+    default in a statically linked program.
+  * gcov
+      gcov is a test coverage program. Compile fBlog with  options:
+    `-fprofile-arcs -ftest-coverage'.
+    Look at `https://gcc.gnu.org/onlinedocs/gcc-4.5.3/gcc/Gcov.html#Gcov'
+
+V - PROGRAM STRUCTURE
+---------------------
+  There is 4 compilation units for this program:
+  - main.f08 (main code)
+  - mod_fblog.f08 (module fblog_m)
+  - mod_io.f08 (module io_m)
+  - mod_tty.f08 (module tty_m)
+
+  Modules that have some included files:
+  - fblog_m (i18n.inc)
+  - io_m (config_txt_1.inc, config_txt_2.inc, help.inc, css_standard_1.inc,
+         css_standard_2.inc, css_standard_3.inc, css_standard_print.inc,
+         lorem_ipsum.inc)
+    The most important file is the module fblog_m that could be used alone by
+  any program to update a fBlog already installed (via the procedure update).
+
+    You may use the utility `cscope': run `make cscope' then enter `cscope'.
+    Ford (see here after `Building documentation') provides helpful drawings.
+
+VI - TRANSLATION
+----------------
+  For the present, there is only two translations: English and French. The
+  selection is automatically done by the environment variable LANG. If LANG is
+  set to `fr', all messages are in French excepted the help (that will be only
+  in English for ever). If the LANG is set with `en', messages will be in
+  English. For any languages not available (or if LANG is not set), English is
+  the default.
+    It is very simple to add a new translation! Follow these three steps:
+  1. Open file `src/i18n.inc' and edit it.
+  2. Open file `src/mod_fblog.f08 and add a new line to the enum statement just
+     above `contain' statement (line 130), between `enumerator en' and
+     `enumerator fr'.
+       For example, to add Spanish:
+                     ~~~~~~~~~~~~~~~~
+                     enum, bind(c)
+                        enumerator en
+                        enumerator es
+                        enumerator fr
+                     end enum
+                     ~~~~~~~~~~~~~~~~
+  3. Compile again the program.
+  NOTE: there is not equivalent of the C library gettext() in Fortran.
+
+VII - BUILDING DOCUMENTATION
+----------------------------
+* help2man
+    help2man, is a gnu utility. To invoke it, run:
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                     $ ./configure
+                     $ make
+                     $ help2man -N -o fblog.1 src/fblog
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+* Ford
+    Ford is an utility similar to Doxygen to generate documentation from
+    Fortran source code. You can find some comments in fBlog sources beginning
+    by `!!' or `!>'. That is to deal with Ford.
+      To download Ford: `https://pypi.python.org/pypi/FORD'
+      To run Ford, you need a configuration file in Markdown language. For
+    example, this one:
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        $ cat projet.md
+        project: fBlog
+        output_dir: ./doc
+        project_website: http://example.com/
+        summary: Stand-alone static site generator for Linux console
+        author: foo
+        email: foo@example.com
+        predocmark: >                                  
+        docmark_alt: #
+        predocmark_alt: <
+        display: public
+                 private
+                 protected
+        sort:type
+        source: true
+        graph: true
+        macro: TEST
+               LOGIC=.true.
+        extra_mods: json_module: http://jacobwilliams.github.io/json-fortran/
+                    futility: http://cmacmackin.github.io
+        license: gfdl
+        extra_filetypes: inc sh #
+        extensions: f08
+
+        **fBlog is a stand-alone weblog page generator.**
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    then run:
+                     ~~~~~~~~~~~~~~~~~
+                     $ mkdir doc
+                     $ ford project.md
+                     ~~~~~~~~~~~~~~~~~
+    All the HTML documentation will be generated inside the `doc' directory.
+
+--------------------------------------------------------------------------------
+                                                Copyright (C) 2016 Denis Bernard
+                                                License: GPLv3+
