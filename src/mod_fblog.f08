@@ -130,6 +130,7 @@ module fblog_m
   enum, bind(c)
      enumerator en
      enumerator fr
+	 enumerator pt
   end enum
   !
   contains
@@ -147,6 +148,7 @@ module fblog_m
     call get_environment_variable(name = "LANG", value = lang, status = stat)
     if (lang == "en") l = en
     if (lang == "fr") l = fr
+	if (lang == "pt" .or. lang == "pt_BR") l = pt
     str_i18n = trim(msgstr(l,msg))
     if (len(str_i18n) == 0) str_i18n = trim(msgstr(en,msg))
     i18n = str_i18n
