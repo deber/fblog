@@ -1,4 +1,4 @@
-AC_INIT([fblog], [0.6.0], [deber@users.sf.net])
+AC_INIT([fblog], [0.6.1], [deber@users.sf.net])
 FC=gfortran
 FCFLAGS="-v -static-libgfortran"
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])

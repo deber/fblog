@@ -180,10 +180,10 @@ VI - TRANSLATION
   in English for ever). If the LANG is set with `en', messages will be in
   English. For any languages not available (or if LANG is not set), English is
   the default.
-    It is very simple to add a new translation! Follow these three steps:
+    It is very simple to add a new translation! Follow these four steps:
   1. Open file `src/i18n.inc' and edit it.
-  2. Open file `src/mod_fblog.f08 and add a new line to the enum statement just
-     above `contain' statement (line 130), between `enumerator en' and
+  2. Open file `src/mod_fblog.f08' and add a new line to the enum statement
+     just above `contain' statement (line 138), between `enumerator en' and
      `enumerator fr'.
        For example, to add Spanish:
                      ~~~~~~~~~~~~~~~~
@@ -193,7 +193,10 @@ VI - TRANSLATION
                         enumerator fr
                      end enum
                      ~~~~~~~~~~~~~~~~
-  3. Compile again the program.
+  3. In the function `i18n()' of the file `src/mod_fblog.f08' (lines 155) add a
+     statement like this one for Portuguese:
+        `if (lang == "pt") l = pt'
+  4. Compile again the program.
   NOTE: there is not equivalent of the C library gettext() in Fortran.
 
 VII - BUILDING DOCUMENTATION
