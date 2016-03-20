@@ -30,7 +30,7 @@ module tty_m
        & not_modified, now_you_could_edit_settings, now_you_should_update, pages, path, post_amount, posts, quit, show_last_posts,&
        & show_full_list_css, show_full_list_pages, show_full_list_posts, show_version, styles, terminate,&
        & the_folowing_files_and_directories_will_be_created, there_is_already_a_blog, this_file_doesnt_exist, this_number_is_wrong&
-       &, total_entries, up, update, update_all, wrong_entry
+       &, total_entries, translator, up, update, update_all, wrong_entry
   use :: io_m, only: add_post, config, create_blog, delete_css, delete_page, delete_post, edit_css, edit_page, edit_post, list_css&
        & , list_pages, list_posts
   !
@@ -100,7 +100,8 @@ contains
     !
     use, intrinsic :: iso_fortran_env, only: compiler_version, compiler_options
     !
-    print '(a,2/,a,2/)', show_version, compiler_version() // ' (' // compiler_options() // ')'
+    print '(4a,2/,4a,2/)', show_version, " Translated by ", i18n(translator), '.' , compiler_version(), ' (', compiler_options(), &
+          &  ')'
     inquire(file = path // fblog_dir // '.', exist = file_exist)
     if (.not. file_exist) then
        inquire(file = path // FBLOG_DIR // '.', exist = directory_exist)

@@ -20,9 +20,9 @@ module fblog_m
        & now_you_should_update, pages, pages_dir, path, posts, post_amount, quit, show_last_posts, show_full_list_css,&
        & show_full_list_pages, show_full_list_posts, show_version, styles, styles_dir, terminate, total_entries, update, version,&
        & the_folowing_files_and_directories_will_be_created, there_is_already_a_blog, there_is_not_directory,&
-       & this_file_doesnt_exist, this_number_is_wrong, too_much_arguments, up, update_all, wrong_entry
+       & this_file_doesnt_exist, this_number_is_wrong, too_much_arguments, translator, up, update_all, wrong_entry
   !
-  character(len=*), parameter :: version = '0.6.0'
+  character(len=*), parameter :: version = '0.6.1'
   character(len=*), parameter :: copyright = '2016'
   character(len=*), parameter :: config_file = 'fBlog/fblog.conf'
   character(len=*), parameter :: styles_dir = 'fBlog/styles/'
@@ -117,6 +117,7 @@ module fblog_m
      enumerator this_file_doesnt_exist
      enumerator this_number_is_wrong
      enumerator too_much_arguments
+     enumerator translator
      enumerator up
      enumerator update_all
      enumerator update_done
@@ -124,13 +125,14 @@ module fblog_m
      enumerator system_said
      enumerator warn_about_no_css
      enumerator warn_about_no_css_print
-     enumerator wrong_entry
-  end enum
+     enumerator wrong_entry ! Keep this wrong_entry enumarator at the last line.
+  end enum                  ! (Have a look for the dimension of `msgstr' variable.)
   !
   enum, bind(c)
-     enumerator en
-     enumerator fr
-	 enumerator pt
+     enumerator en ! Translators, please keep this English enumarator at the first line.
+     enumerator pt
+     enumerator fr ! Translators, please keep this French enumarator at the last line.
+                   ! (Have a look for the dimension of `msgstr' variable.)
   end enum
   !
   contains
@@ -146,9 +148,12 @@ module fblog_m
     include 'i18n.inc'
     !
     call get_environment_variable(name = "LANG", value = lang, status = stat)
-    if (lang == "en") l = en
-    if (lang == "fr") l = fr
-	if (lang == "pt" .or. lang == "pt_BR") l = pt
+    ! Message to translators: `lang' variable is only of two characters lenght.
+    ! For example, Brazilian has LANG=pt_BR. But, in sake of simplicity,
+    ! the variable `lang' get only `pt'.
+    if (lang == "en") l = en                      ! English language.
+    if (lang == "fr") l = fr                      ! French language.
+    if (lang == "pt") l = pt                      ! Portuguese language.
     str_i18n = trim(msgstr(l,msg))
     if (len(str_i18n) == 0) str_i18n = trim(msgstr(en,msg))
     i18n = str_i18n

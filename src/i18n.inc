@@ -1,4 +1,5 @@
 ! Copyright (C) 2016 Denis Bernard.
+! Copyright (C) 2016 Vicente Merlo (for Portuguese translation).
 ! License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.
 ! This is free software: you are free to change and redistribute it.
 ! There is NO WARRANTY, to the extent permitted by law.
@@ -10,6 +11,7 @@
 ! French translator:  Denis BERNARD (mother tongue)
 ! Portuguese translator: Vicente Merlo
 !
+! Messages to be translated
 !
   msgstr(en,bad_argument) = "Bad argument:"
   msgstr(fr,bad_argument) = "Mauvais argument :"
@@ -29,6 +31,7 @@
 !
   msgstr(en,copy_css_print) = "Copy CSS for printer to `"
   msgstr(fr,copy_css_print) = "Copie la feuille de style des permaliens imprimables vers `"
+  msgstr(pt,copy_css_print) = "Copiar folha de estilos (páginas de impressão) para `"
 !
   msgstr(en,deleted) = "deleted"
   msgstr(fr,deleted) = "effacé"
@@ -275,9 +278,16 @@
   msgstr(fr,warn_about_no_css_print) = "ATTENTION : pas de CSS définie pour les permaliens imprimables. Toutefois, cette CSS &
                                        &est facultative."
   msgstr(pt,warn_about_no_css_print) = "ATENÇÃO: nenhum CSS definido para páginas de impressão de permalink. Porém, esse CSS&
-                                       & é opcional."									   
+                                       & é opcional."
 !
   msgstr(en,wrong_entry) = "Wrong entry."
   msgstr(fr,wrong_entry) = "Mauvaise saisie."
   msgstr(pt,wrong_entry) = "Entrada inválida."
 !
+! Translators' name
+!
+  msgstr(en,translator) = "Denis Bernard"
+  msgstr(fr,translator) = "Denis Bernard"
+  msgstr(pt,translator) = "Vicente Merlo"
+!
+
