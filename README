@@ -1,61 +1,11 @@
-fBlog is a stand-alone weblog page generator to be uploaded (website) or
-viewed on its own computer (diary or notebook).
+WARNING
+-------
 
-TARGET SYSTEMS
---------------
-Any UNIX/POSIX based systems (Linux x86_64 tested).
+DO NOT USE THIS REPO!
 
-DEPENDENCIES
-------------
-* Build time:
-    - Fortran compiler: gfortran version >= 4.8.5 (gfortran 5.3.0 tested).
-* Web pages generation:
-    - POSIX shell (Bash tested),
-    - POSIX external commands (ls, rm, cp, mkdir, stty and vi).
-* Online:
-    - Web server (Apache tested).
-* Offline:
-    - Web browser (Firefox tested).
+* Official Web site : https://sourceforge.net/projects/fortranblog/
 
-QUICK START
------------
-                  ------------------------------
-                  01     $ ./configure
-                  02     $ make
-                  03     # make install-strip
-                  04     $ mkdir new_blog_dir
-                  05     $ fblog new_blog_dir
-                  ------------------------------
+* Latest stable version: fblog 0.6.1 
 
-ENVIRONMENT
------------
-* EDITOR
-   By default, the text editor is launched according `EDITOR' environment
-   variable. (If none, 'vi' text editor is launched.) To override it, (for
-   example to have 'nano' editor), just enter at command line:
-                       ----------------------
-                       $ EDITOR=nano fblog -c
-                       ----------------------
-   uncomment the line beginning by EDITOR and write the name of your preferred
-   editor.
-* LANG
-   3 languages are available for this version: English (LANG=en), Portuguese
-   (LANG=pt) and French (LANG=fr). If LANG is not set or set for any other
-   language, English is the default. For example, to have the French version,
-   just enter at command line:
-                       ---------------
-                       $ LANG=fr fblog
-                       ---------------
-INFO
-----
-  - Type `$ fblog -h'
-  - Read file `README-dev'
-  - http://oceamer.com/~denis/
+* Contact: deber:Denis Bernard <deber@users.sf.net>
 
-OFFICIAL WEB SITES
-------------------
-  https://sourceforge.net/projects/fortranblog/
-  http://fblog.eu/
---------------------------------------------------------------------------------
-                                                Copyright (C) 2016 Denis Bernard
-                                                License: GPLv3+
