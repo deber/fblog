@@ -39,9 +39,10 @@ ENVIRONMENT
    uncomment the line beginning by EDITOR and write the name of your preferred
    editor.
 * LANG
-   Two languages are available for this version: English (LANG=en) and French
-   (LANG=fr). If LANG is not set or set for any other language, English is the
-   default. For example, to have the French version, just enter at command line:
+   3 languages are available for this version: English (LANG=en), Portuguese
+   (LANG=pt) and French (LANG=fr). If LANG is not set or set for any other
+   language, English is the default. For example, to have the French version,
+   just enter at command line:
                        ---------------
                        $ LANG=fr fblog
                        ---------------
