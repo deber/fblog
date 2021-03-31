@@ -1,0 +1,5 @@
+* BUG : quand on libère un article, espace non récupéré (ne rectifier qu'après achèvement
+      de tot_append() et tot_index()).
+* Continuer tot_index() jusqu'à achèvement.
+* Fusionner tot_index() dans tot_append().
+* Créer une routine tot_insert() pour les nouvelles dates antérieures.

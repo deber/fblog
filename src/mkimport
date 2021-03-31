@@ -1,0 +1,3 @@
+#! /bin/sh
+gfortran -g -Wall -Wextra -o import tot.f08 import.f08
+

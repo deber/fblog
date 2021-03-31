@@ -1,0 +1,3 @@
+#! /bin/sh
+ifort -g -o imfb tot.f90 main.f90
+

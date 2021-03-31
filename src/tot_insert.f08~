@@ -1,0 +1,74 @@
+subroutine tot_insert(pathname, id, status, msg)
+  character(len=*), intent(in) :: pathname
+  character(len=16), intent(in) :: id
+  integer, intent(out), optional :: status  
+  character(len=256), intent(out), optional :: msg
+  integer ::  file_records_count, file_size, io_rec_len, iostat, new_rec, previous_free, u
+  character(len=256) :: iomsg
+  type (header) h
+  type(free_record) fr
+  type (article) previous_record, next_record
+  logical :: exist, opened
+  character(len=REC_LEN) :: fake
+  inquire(iolength=io_rec_len) fake  
+  inquire(file=pathname, opened=opened, exist=exist, size=file_size) 
+  if (opened) error stop "add_article(): "// pathname // " already opened"
+  if (exist .eqv. .false.) error stop pathname // " do not exist"
+  file_records_count = file_size / rec_len
+  open(newunit=u, file=pathname, status='old', access='direct', recl=io_rec_len, iostat=iostat, iomsg=iomsg)
+  if (iostat /= 0) then
+    status = iostat ; msg =iomsg
+    return
+  end if
+  read(u, rec=1) h
+     if (h%total_free /= 0) then                ! Free space remaining
+       read(u, rec=h%last_free) fr
+       previous_free = fr%previous
+       new_rec = h%last_free
+       next_record%id = id
+       if (h%last == 0)   then                  ! Empty data base with free space
+         next_record%previous = 0
+         next_record%next = 0
+         h%first = new_rec
+       else
+         read(u, rec=h%last) previous_record    ! Several records in data base with free space
+         previous_record%next = new_rec
+         write(u, rec=h%last) previous_record
+         next_record%previous = h%last
+         next_record%next = 0
+       end if
+       write(u, rec=new_rec) next_record
+       h%last = new_rec
+       h%total = h%total + 1
+       h%total_free = h%total_free - 1
+       h%last_free = previous_free
+       write(u, rec=1) h
+       status = 0
+        msg = next_record%id
+        close(u)
+    end if
+    if (h%total_free == 0) then                 ! No free space
+      new_rec = file_records_count + 1
+      next_record%id = id
+      if (h%last == 0) then                     ! Empty data base without free space   
+        next_record%previous = 0    
+        next_record%next = 0    
+        h%first = new_rec   
+      else                                      ! Several records in data base without free space
+        read(u, rec=h%last) previous_record    
+        previous_record%next = new_rec    
+        write(u, rec=h%last) previous_record    
+        next_record%previous = h%last    
+        next_record%next = 0    
+      end if    
+      write(u, rec=new_rec) next_record    
+      h%last = new_rec    
+      h%total = h%total +1    
+      write(u, rec=1) h    
+      status = 0    
+      msg = next_record%id
+      close(u)    
+    end if
+    call tot_index(pathname, id, new_rec, status, msg)
+  return
+end subroutine tot_insert

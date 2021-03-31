@@ -1,0 +1,7 @@
+2021-03-17 TOT_module: New records can use freed records. However, new records must be always newer.
+2021-03-18 Added secondes for timestamps.
+2021-03-21 Found a bug under Intel compiler. Is-it a question of alignment with len(id) = 14 ? YES!
+           Increased id size 14 to 16.
+2021-03-23 Changed naming tot_index() to tot_list()
+2021-03-24 Created tot_index() to insert records about year, month and day.
+2021-03-27 Renamed tot_insert() by tot_append()

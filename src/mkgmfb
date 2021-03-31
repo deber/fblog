@@ -1,0 +1,3 @@
+#! /bin/sh
+gfortran -Wall -Wextra -pedantic -g -o gmfb tot.f08 main.f08
+
